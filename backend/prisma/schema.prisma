@@ -1,0 +1,25 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model VisualLog {
+  id         Int      @id @default(autoincrement())
+  eventType  String
+  url        String
+  title      String?
+  timestamp  DateTime
+  details    Json?
+  screenshot String   @db.Text  // @db.Text allows storing large Base64 image strings
+
+  @@map("visual_logs")
+}
