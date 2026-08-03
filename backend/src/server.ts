@@ -46,5 +46,5 @@ app.post('/api/track', async (req: Request<{}, {}, TrackRequestBody>, res: Respo
   }
 });
 
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => console.log(`🚀 Prisma Express Server running on port ${PORT}`));

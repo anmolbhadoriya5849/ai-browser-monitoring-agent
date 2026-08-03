@@ -1,4 +1,4 @@
-const BACKEND_API_URL = "http://localhost:5000/api/track";
+const BACKEND_API_URL = "http://localhost:5001/api/track";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "BROADCAST_ACTIVITY") {
@@ -18,21 +18,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       };
 
       // Ship payload directly over to the Express backend server
-        fetch(BACKEND_API_URL, {
+      fetch(BACKEND_API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(packedPayload)
-        })
+      })
         .then(async (res) => {
-        // If the server returns a bad status (like 413 or 500), print the text instead of parsing JSON
-        if (!res.ok) {
+          if (!res.ok) {
             const errorText = await res.text();
             throw new Error(`Server responded with status ${res.status}: ${errorText}`);
-        }
-        return res.json();
+          }
+          // CRUCIAL: You MUST return the parsed json here for the next .then() block!
+          return res.json();
         })
-        .then(data => console.log("Successfully logged to database server:", data))
-        .catch(err => console.error("Failed to sync data packet to backend:", err));
+        .then(data => {
+          console.log("Successfully logged to database server:", data);
+        })
+        .catch(err => {
+          console.error("Failed to sync data packet to backend:", err);
+        });
     });
   }
 });
